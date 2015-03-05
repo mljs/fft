@@ -1,0 +1,36 @@
+{
+  "name": "ml-fft",
+  "version": "1.0.0",
+  "description": "fft",
+  "main": "src/index.js",
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mljs/fft.git"
+  },
+  "keywords": [
+    "fft",
+    "data",
+    "mining",
+    "datamining",
+    "machine",
+    "learning"
+  ],
+  "author": "Michaël Zasso",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mljs/fft/issues"
+  },
+  "homepage": "https://github.com/mljs/fft",
+  "devDependencies": {
+    "mocha-better-spec-reporter": "latest",
+    "mocha": "latest",
+    "should": "latest"
+  }
+}
