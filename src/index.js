@@ -1,5 +1,3 @@
 'use strict';
 
-exports.x = function () {
-    return 'x';
-};
+exports.FFTUtils = require("./FFTUtils");
