@@ -8,7 +8,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive"
+    "test": "mocha --require should --reporter mocha-better-spec-reporter --recursive",
+    "build": "cheminfo build"
   },
   "repository": {
     "type": "git",
@@ -22,15 +23,16 @@
     "machine",
     "learning"
   ],
-  "author": "Michaël Zasso",
+  "author": "Andres Castillo",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mljs/fft/issues"
   },
   "homepage": "https://github.com/mljs/fft",
   "devDependencies": {
-    "mocha-better-spec-reporter": "latest",
-    "mocha": "latest",
-    "should": "latest"
+    "cheminfo-tools": "^1.0.2",
+    "mocha": "^2.2.5",
+    "mocha-better-spec-reporter": "^2.1.1",
+    "should": "^7.0.2"
   }
 }
