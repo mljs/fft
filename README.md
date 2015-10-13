@@ -7,6 +7,23 @@
 
 fft library for the ml libraries.
 
+### 1D FFT
+
+`var n = 16;
+`        var nCols = n;
+`
+`        FFT.init(nCols);
+`
+`        var re = new Array(nCols);
+`        var im = new Array(nCols);
+`        for(var i=0;i<nCols;i++){
+`            re[i]=i;
+`            im[i]=nCols-i-1;
+`        }
+`
+`        FFT.fft(re, im);
+`        FFT.ifft(re, im);
+
 ## Installation
 
 `$ npm install ml-fft`
