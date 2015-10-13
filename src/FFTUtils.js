@@ -191,6 +191,47 @@ var FFTUtils= {
                 ftSignal[(iRow * 2 + 1) * ftCols + iCol] = im;
             }
         }
+    },
+    /**
+     *
+     * @param data
+     * @param kernel
+     * @param nRows
+     * @param nCols
+     * @returns {*}
+     */
+    convolute:function(data, kernel, nRows, nCols){
+        var ftSpectrum = new Array(nCols * nRows);
+        for (var i = 0; i<nRows * nCols; i++){
+            ftSpectrum[i] = data[i];
+        }
+
+        ftSpectrum = this.fft2DArray(ftSpectrum, nRows, nCols);
+
+        var dim = kernel.length;
+        var ftFilterData = new Array(nCols * nRows);
+        for(var i=0;i<nCols * nRows;i++){
+            ftFilterData[i]=0;
+        }
+
+        var iRow, iCol;
+        var shift = (dim - 1) / 2;
+        //console.log(dim);
+        for (var ir = 0; ir < dim; ir++) {
+            iRow = (ir - shift + nRows) % nRows;
+            for (var ic = 0; ic < dim; ic++) {
+                iCol = (ic - shift + nCols) % nCols;
+                ftFilterData[iRow * nCols + iCol] = kernel[ir][ic];
+            }
+        }
+
+        ftFilterData = this.fft2DArray(ftFilterData, nRows, nCols);
+
+        var ftRows = nRows * 2;
+        var ftCols = nCols / 2 + 1;
+        this.convolute2DI(ftSpectrum, ftFilterData, ftRows, ftCols);
+
+        return  this.ifft2DArray(ftSpectrum, ftRows, ftCols);
     }
 }
 
