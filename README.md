@@ -7,26 +7,62 @@
 
 fft library for the ml libraries.
 
-### 1D FFT
-
-`var n = 16;
-`        var nCols = n;
-`
-`        FFT.init(nCols);
-`
-`        var re = new Array(nCols);
-`        var im = new Array(nCols);
-`        for(var i=0;i<nCols;i++){
-`            re[i]=i;
-`            im[i]=nCols-i-1;
-`        }
-`
-`        FFT.fft(re, im);
-`        FFT.ifft(re, im);
-
 ## Installation
 
 `$ npm install ml-fft`
+
+### 1D FFT and IFFT
+
+`var n = 16; 
+`var nCols = n; 
+`FFT.init(nCols);
+`var re = new Array(nCols);
+`var im = new Array(nCols);
+
+`for(var i=0;i<nCols;i++){
+`   re[i]=i;
+`   im[i]=nCols-i-1;
+`}
+
+`FFT.fft(re, im);
+`FFT.ifft(re, im);
+
+### 2D FFT and 2D IFFT
+
+`var n = 4;
+`var nRows = n;
+`var nCols = n;
+`var data = new Array(nRows*nCols);
+`for(var i=0;i<nRows;i++){
+`    for(var j=0;j<nCols;j++){
+`        data[i*nCols+j]=i+j;
+`    }
+`}
+`var ftData = FFTUtils.fft2DArray(data, nCols, nCols);
+`var ftRows = nRows * 2;
+`var ftCols = nCols / 2 + 1;
+`var iftData =  FFTUtils.ifft2DArray(ftData, ftRows, ftCols);
+
+### Convolute Matrices
+
+`var n=1024;
+`var data = new Uint32Array(n*n);
+`for(var i=0;i<n;i++){
+`    for(var j=0;j<n;j++){
+`        data[i*n+j]=i+j;
+`    }
+`}
+`
+`var kn = nks[nki];
+`var kernel = new Array(kn);
+`for(var i=0;i<kn;i++){
+`  kernel[i]=new Array(kn);
+`  for(var j=0;j<kn;j++){
+`      kernel[i][j]=i+j;
+`  }
+`}
+`
+`var convolutedData = convoluteFFT(data, kernel, n, n);
 
 ## License
 
