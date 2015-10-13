@@ -31,6 +31,9 @@ FFT.ifft(re, im);
 
 ### 2D FFT and 2D IFFT
 
+data contains the matrix. The even rows contain the real part, the odd rows contain the imaginary part.
+
+
 ```js
 var n = 4;
 var nRows = n;
