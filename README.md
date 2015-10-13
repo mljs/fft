@@ -5,7 +5,7 @@
   [![David deps][david-image]][david-url]
   [![npm download][download-image]][download-url]
 
-fft
+fft library for the ml libraries.
 
 ## Installation
 
