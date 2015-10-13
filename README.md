@@ -30,6 +30,7 @@ FFT.ifft(re, im);
 ```
 
 ### 2D FFT and 2D IFFT
+
 ```js
 var n = 4;
 var nRows = n;
@@ -44,8 +45,10 @@ var ftData = FFTUtils.fft2DArray(data, nCols, nCols);
 var ftRows = nRows * 2;
 var ftCols = nCols / 2 + 1;
 var iftData =  FFTUtils.ifft2DArray(ftData, ftRows, ftCols);
+```
 
 ### Convolute Matrices
+
 ```js
 var n=1024;
 var data = new Uint32Array(n*n);
