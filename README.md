@@ -6,7 +6,7 @@
   [![npm download][download-image]][download-url]
 
 fft library for the ml libraries. The idea of this, another flavor of the FFT library, is to perform, Real and Complex matrix FFT and IFFT, by using only the 1D FFT algorithm. 
-The 1D FFT and IFFT was taken from this project: [https://github.com/wellflat/javascript-labs/tree/master/cv/fft]
+The 1D FFT and IFFT was taken and adapted from this project: [https://github.com/wellflat/javascript-labs/tree/master/cv/fft]
 
 ## Installation
 
