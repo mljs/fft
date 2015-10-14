@@ -80,7 +80,7 @@ for(var i=0;i<kn;i++){
   }
 }
 
-var convolutedData = convoluteFFT(data, kernel, n, n);
+var convolutedData = FFTUtils.convoluteFFT(data, kernel, n, n);
 ```
 ## License
 
