@@ -58,7 +58,7 @@ var ftCols = nCols / 2 + 1;
 var iftData =  FFTUtils.ifft2DArray(ftData, ftRows, ftCols);
 ```
 
-### Convolute Matrices
+### Matrix-Matrix convolution. It performs the convolution in the Fourier space(multiplication) and then makes an inverse transformation of the result. The difference in performance can be tested in the BenchMark script.
 
 ```js
 var n=1024;
