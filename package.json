@@ -1,6 +1,6 @@
 {
   "name": "ml-fft",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "fft",
   "main": "src/index.js",
   "directories": {
@@ -17,11 +17,14 @@
   },
   "keywords": [
     "fft",
+    "2D fft",
     "data",
     "mining",
     "datamining",
     "machine",
-    "learning"
+    "learning",
+    "convolution",
+    "matrix"
   ],
   "author": "Andres Castillo",
   "license": "MIT",
