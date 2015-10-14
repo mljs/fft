@@ -11,6 +11,14 @@ fft library for the ml libraries.
 
 `$ npm install ml-fft`
 
+### Import in node
+
+```js
+var lib = require("ml-fft");
+var FFT = lib.FFT;
+var FFTUtils = lib.FFTUtils
+```
+
 ### 1D FFT and IFFT
 
 ```js
