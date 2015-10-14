@@ -61,7 +61,7 @@ for(var i=0;i<n;i++){
     }
 }
 
-var kn = nks[nki];
+var kn = 21;
 var kernel = new Array(kn);
 for(var i=0;i<kn;i++){
   kernel[i]=new Array(kn);
