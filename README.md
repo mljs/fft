@@ -83,8 +83,16 @@ for(var i=0;i<kn;i++){
   }
 }
 
-var convolutedData = FFTUtils.convoluteFFT(data, kernel, n, n);
+var convolutedData = FFTUtils.convolute(data, kernel, n, n);
 ```
+### toRadix2
+
+Convert the data matrix to a radix2 2D matrix. The input data is a a single vector containing all the values of the matrix
+
+```js
+FFTUtils.toRadix2(data, nRows, nCols);
+```
+
 ## License
 
   [MIT](./LICENSE)

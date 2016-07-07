@@ -111,6 +111,13 @@ var FFTUtils= {
             for (var iRow = nRows - 1; iRow >= 0; iRow--) {
                 tmpCols.re[iRow] = tempTransform[(iRow * 2) * ftCols + iCol];
                 tmpCols.im[iRow] = tempTransform[(iRow * 2 + 1) * ftCols + iCol];
+                //TODO Chech why this happens
+                if(isNaN(tmpCols.re[iRow])){
+                    tmpCols.re[iRow]=0;
+                }
+                if(isNaN(tmpCols.im[iRow])){
+                    tmpCols.im[iRow]=0;
+                }
             }
             FFT.fft1d(tmpCols.re, tmpCols.im);
             for (var iRow = nRows - 1; iRow >= 0; iRow--) {
@@ -232,6 +239,44 @@ var FFTUtils= {
         this.convolute2DI(ftSpectrum, ftFilterData, ftRows, ftCols);
 
         return  this.ifft2DArray(ftSpectrum, ftRows, ftCols);
+    },
+
+    /**
+     * ZeroFilling of the image in to make nRows and nCols radix-2
+     * @param data
+     * @param nRows
+     * @param nCols
+     */
+
+    toRadix2:function(data, nRows, nCols){
+    var output = data.slice(0, data.length);
+        var i, padding;
+        var cols = nCols, rows = nRows
+        if(!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
+            //Then we have to make a pading to next radix2
+            cols = 0;
+            while((nCols>>++cols)!=0);
+            cols=1<<cols;
+            padding = new Array(cols-nCols);
+            for(i=0;i<padding.length;i++){
+                padding[i]=0;
+            }
+            for(i=nRows-1;i>=0;i--){
+                data.splice(i*nCols,0,...padding);
+            }
+        }
+        if(!(nRows !== 0 && (nRows & (nRows - 1)) === 0)) {
+            //Then we have to make a pading to next radix2
+            rows = 0;
+            while((nRows>>++rows)!=0);
+            rows=1<<rows;
+            padding = new Array((rows-nRows)*nCols);
+            for(i=0;i<padding.length;i++){
+                padding[i]=0;
+            }
+            data.splice(data.length,0,...padding);
+        }
+        return {data:output, rows:rows, cols:cols};
     }
 }
 
