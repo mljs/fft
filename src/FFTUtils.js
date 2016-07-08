@@ -1,3 +1,5 @@
+'use strict'
+
 var FFT = require('./fftlib');
 
 var FFTUtils= {
@@ -249,7 +251,7 @@ var FFTUtils= {
      */
 
     toRadix2:function(data, nRows, nCols){
-    var output = data.slice(0, data.length);
+        var output = data.slice(0, data.length);
         var i, padding;
         var cols = nCols, rows = nRows
         if(!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
