@@ -276,12 +276,13 @@ var FFTUtils= {
             rows = 0;
             while((nRows>>++rows)!=0);
             rows=1<<rows;
-            padding = new Array((rows-nRows)*nCols);
+            padding = new Array((rows-nRows)*cols);
             for(i=0;i<padding.length;i++){
                 padding[i]=0;
             }
             output.splice(output.length,0,...padding);
         }
+
         return {data:output, rows:rows, cols:cols};
     },
 
