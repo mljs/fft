@@ -1,6 +1,6 @@
 {
   "name": "ml-fft",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "fft",
   "main": "src/index.js",
   "directories": {
@@ -33,9 +33,9 @@
   },
   "homepage": "https://github.com/mljs/fft",
   "devDependencies": {
-    "cheminfo-tools": "^1.0.2",
-    "mocha": "^2.2.5",
-    "mocha-better-spec-reporter": "^2.1.1",
-    "should": "^7.0.2"
+    "cheminfo-tools": "1.4.1",
+    "mocha": "^2.5.3",
+    "mocha-better-spec-reporter": "^3.0.2",
+    "should": "^9.0.2"
   }
 }
