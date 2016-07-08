@@ -250,8 +250,12 @@ var FFTUtils= {
      * @param nCols
      */
 
-    toRadix2:function(data, nRows, nCols){
-        //var output = data;//.slice(0, data.length);
+    toRadix2:function(data, nRows, nCols, opt){
+        var options = Object.assign({},{inplace:true},opt);
+        var output = data;
+        if(!options.inplace){
+            output = data.slice(0, data.length);
+        }
         var i, padding;
         var cols = nCols, rows = nRows
         if(!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
@@ -264,7 +268,7 @@ var FFTUtils= {
                 padding[i]=0;
             }
             for(i=nRows-1;i>=0;i--){
-                data.splice(i*nCols,0,...padding);
+                output.splice(i*nCols,0,...padding);
             }
         }
         if(!(nRows !== 0 && (nRows & (nRows - 1)) === 0)) {
@@ -276,23 +280,30 @@ var FFTUtils= {
             for(i=0;i<padding.length;i++){
                 padding[i]=0;
             }
-            data.splice(data.length,0,...padding);
+            output.splice(output.length,0,...padding);
         }
-        return {data:data, rows:rows, cols:cols};
+        return {data:output, rows:rows, cols:cols};
     },
 
     /**
      * Crop the given matrix to fit the corresponding number of rows and columns
      */
-    crop:function(data, nRows, nCols, newNRows, newNCols){
+    crop:function(data, nRows, nCols, newNRows, newNCols, opt){
+        var options = Object.assign({},{inplace:true},opt);
+
         var colsToCrop = nCols-newNCols;
         var rowsToCrop = (nRows-newNRows);
 
-        data.splice(data.length-rowsToCrop*nCols,rowsToCrop*nCols);//Remove the rows
-        for(var i=newNRows-1;i>=0;i--){
-            data.splice(i*nCols, colsToCrop);
+        var output = data;
+        if(!options.inplace){
+            output = data.slice(0, data.length);
         }
-        return data;
+
+        output.splice(output.length-rowsToCrop*nCols,rowsToCrop*nCols);//Remove the rows
+        for(var i=newNRows-1;i>=0;i--){
+            output.splice(i*nCols, colsToCrop);
+        }
+        return output;
     }
 }
 
