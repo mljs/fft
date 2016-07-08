@@ -49,4 +49,34 @@ describe('FFT', function () {
             im[i].should.be.approximately(nCols-i-1,10e-10);
         }
     });
+
+    it('Test utils Crop', function () {
+        var nRows = 15;
+        var nCols = 32;
+        var data = new Array(nRows*nCols);
+        for(var i=0;i<nRows;i++){
+            for(var j=0;j<nCols;j++){
+                data[i*nCols+j]=i+j;
+            }
+        }
+
+        var radix2 = FFTUtils.toRadix2(data, nRows, nCols);
+        FFTUtils.crop(radix2.data, radix2.rows, radix2.cols, nRows, nCols);
+        radix2.data.length.should.equal(nCols*nRows);
+    });
+
+    it('Test utils toRadix2', function () {
+        var nRows = 15;
+        var nCols = 32;
+        var data = new Array(nRows*nCols);
+        for(var i=0;i<nRows;i++){
+            for(var j=0;j<nCols;j++){
+                data[i*nCols+j]=i+j;
+            }
+        }
+
+        var radix2 = FFTUtils.toRadix2(data, nRows, nCols);
+        radix2.cols.should.equal(32);
+        radix2.rows.should.equal(16);
+    });
 });

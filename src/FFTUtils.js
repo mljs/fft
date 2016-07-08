@@ -251,7 +251,7 @@ var FFTUtils= {
      */
 
     toRadix2:function(data, nRows, nCols){
-        var output = data.slice(0, data.length);
+        //var output = data;//.slice(0, data.length);
         var i, padding;
         var cols = nCols, rows = nRows
         if(!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
@@ -278,7 +278,21 @@ var FFTUtils= {
             }
             data.splice(data.length,0,...padding);
         }
-        return {data:output, rows:rows, cols:cols};
+        return {data:data, rows:rows, cols:cols};
+    },
+
+    /**
+     * Crop the given matrix to fit the corresponding number of rows and columns
+     */
+    crop:function(data, nRows, nCols, newNRows, newNCols){
+        var colsToCrop = nCols-newNCols;
+        var rowsToCrop = (nRows-newNRows);
+
+        data.splice(data.length-rowsToCrop*nCols,rowsToCrop*nCols);//Remove the rows
+        for(var i=newNRows-1;i>=0;i--){
+            data.splice(i*nCols, colsToCrop);
+        }
+        return data;
     }
 }
 
