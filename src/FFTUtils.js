@@ -209,7 +209,7 @@ var FFTUtils= {
      * @param nCols
      * @returns {*}
      */
-    convolute:function(data, kernel, nRows, nCols){
+    convolute:function(data, kernel, nRows, nCols, opt){
         var ftSpectrum = new Array(nCols * nRows);
         for (var i = 0; i<nRows * nCols; i++){
             ftSpectrum[i] = data[i];
@@ -217,19 +217,21 @@ var FFTUtils= {
 
         ftSpectrum = this.fft2DArray(ftSpectrum, nRows, nCols);
 
-        var dim = kernel.length;
+        var dimR = kernel.length;
+        var dimC = kernel[0].length;
         var ftFilterData = new Array(nCols * nRows);
         for(var i=0;i<nCols * nRows;i++){
             ftFilterData[i]=0;
         }
 
         var iRow, iCol;
-        var shift = (dim - 1) / 2;
+        var shiftR = (dimR - 1) / 2;
+        var shiftC = (dimC - 1) / 2;
         //console.log(dim);
-        for (var ir = 0; ir < dim; ir++) {
-            iRow = (ir - shift + nRows) % nRows;
-            for (var ic = 0; ic < dim; ic++) {
-                iCol = (ic - shift + nCols) % nCols;
+        for (var ir = 0; ir < dimR; ir++) {
+            iRow = (ir - shiftR + nRows) % nRows;
+            for (var ic = 0; ic < dimC; ic++) {
+                iCol = (ic - shiftC + nCols) % nCols;
                 ftFilterData[iRow * nCols + iCol] = kernel[ir][ic];
             }
         }
