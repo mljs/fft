@@ -235,13 +235,24 @@ var FFTUtils= {
             }
         }
 
+        var d = new Date();
+        var start = d.getTime();
         ftFilterData = this.fft2DArray(ftFilterData, nRows, nCols);
+        var d0 = new Date();
+        console.log("fft "+(d0.getTime()-start));
 
         var ftRows = nRows * 2;
         var ftCols = nCols / 2 + 1;
         this.convolute2DI(ftSpectrum, ftFilterData, ftRows, ftCols);
 
-        return  this.ifft2DArray(ftSpectrum, ftRows, ftCols);
+        var d = new Date();
+        var start = d.getTime();
+        let toReturn =  this.ifft2DArray(ftSpectrum, ftRows, ftCols);
+        var d0 = new Date();
+        console.log("ifft "+(d0.getTime()-start));
+
+
+        return toReturn;
     },
 
     /**
@@ -277,11 +288,9 @@ var FFTUtils= {
             rows = 0;
             while((nRows>>++rows)!=0);
             rows=1<<rows;
-            padding = new Array((rows-nRows)*cols);
-            for(i=0;i<padding.length;i++){
-                padding[i]=0;
+            for(i=0;i<(rows-nRows)*cols;i++){
+                output.push(0);
             }
-            output.splice(output.length,0,...padding);
         }
 
         return {data:output, rows:rows, cols:cols};
