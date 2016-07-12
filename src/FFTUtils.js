@@ -225,9 +225,8 @@ var FFTUtils= {
         }
 
         var iRow, iCol;
-        var shiftR = (dimR - 1) / 2;
-        var shiftC = (dimC - 1) / 2;
-        //console.log(dim);
+        var shiftR = Math.floor((dimR - 1) / 2);
+        var shiftC = Math.floor((dimC - 1) / 2);
         for (var ir = 0; ir < dimR; ir++) {
             iRow = (ir - shiftR + nRows) % nRows;
             for (var ic = 0; ic < dimC; ic++) {
