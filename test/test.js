@@ -63,7 +63,7 @@ describe('FFT', function () {
         var radix2 = FFTUtils.toRadix2(data, nRows, nCols);
         var cropped = FFTUtils.crop(radix2.data, radix2.rows, radix2.cols, nRows, nCols);
         cropped.length.should.equal(nCols*nRows);
-        radix2.data.length.should.equal(nCols*nRows);
+        radix2.data.length.should.equal(radix2.cols*radix2.rows);
     });
 
     it('Test utils toRadix2', function () {
