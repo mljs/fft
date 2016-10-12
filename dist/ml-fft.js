@@ -64,6 +64,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict'
+
 	var FFT = __webpack_require__(2);
 
 	var FFTUtils= {
@@ -133,7 +135,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param nCols
 	     * @return
 	     */
-	    fft2DArray:function(data, nRows, nCols) {
+	    fft2DArray:function(data, nRows, nCols, opt) {
+	        var options = Object.assign({},{inplace:true})
 	        var ftCols = (nCols / 2 + 1);
 	        var ftRows = nRows * 2;
 	        var tempTransform = new Array(ftRows * ftCols);
@@ -171,12 +174,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        row2 = null;
 	        // transform columns
 	        var finalTransform = new Array(ftRows * ftCols);
+
 	        FFT.init(nRows);
 	        var tmpCols = {re: new Array(nRows), im: new Array(nRows)};
 	        for (var iCol = ftCols - 1; iCol >= 0; iCol--) {
 	            for (var iRow = nRows - 1; iRow >= 0; iRow--) {
 	                tmpCols.re[iRow] = tempTransform[(iRow * 2) * ftCols + iCol];
 	                tmpCols.im[iRow] = tempTransform[(iRow * 2 + 1) * ftCols + iCol];
+	                //TODO Chech why this happens
+	                if(isNaN(tmpCols.re[iRow])){
+	                    tmpCols.re[iRow]=0;
+	                }
+	                if(isNaN(tmpCols.im[iRow])){
+	                    tmpCols.im[iRow]=0;
+	                }
 	            }
 	            FFT.fft1d(tmpCols.re, tmpCols.im);
 	            for (var iRow = nRows - 1; iRow >= 0; iRow--) {
@@ -245,13 +256,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            for (var iCol = 0; iCol < ftCols; iCol++) {
 	                //
 	                re = ftSignal[(iRow * 2) * ftCols + iCol]
-	                * ftFilter[(iRow * 2) * ftCols + iCol]
-	                - ftSignal[(iRow * 2 + 1) * ftCols + iCol]
-	                * ftFilter[(iRow * 2 + 1) * ftCols + iCol];
+	                    * ftFilter[(iRow * 2) * ftCols + iCol]
+	                    - ftSignal[(iRow * 2 + 1) * ftCols + iCol]
+	                    * ftFilter[(iRow * 2 + 1) * ftCols + iCol];
 	                im = ftSignal[(iRow * 2) * ftCols + iCol]
-	                * ftFilter[(iRow * 2 + 1) * ftCols + iCol]
-	                + ftSignal[(iRow * 2 + 1) * ftCols + iCol]
-	                * ftFilter[(iRow * 2) * ftCols + iCol];
+	                    * ftFilter[(iRow * 2 + 1) * ftCols + iCol]
+	                    + ftSignal[(iRow * 2 + 1) * ftCols + iCol]
+	                    * ftFilter[(iRow * 2) * ftCols + iCol];
 	                //
 	                ftSignal[(iRow * 2) * ftCols + iCol] = re;
 	                ftSignal[(iRow * 2 + 1) * ftCols + iCol] = im;
@@ -266,38 +277,100 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param nCols
 	     * @returns {*}
 	     */
-	    convolute:function(data, kernel, nRows, nCols){
+	    convolute:function(data, kernel, nRows, nCols, opt) {
 	        var ftSpectrum = new Array(nCols * nRows);
-	        for (var i = 0; i<nRows * nCols; i++){
+	        for (var i = 0; i<nRows * nCols; i++) {
 	            ftSpectrum[i] = data[i];
 	        }
 
 	        ftSpectrum = this.fft2DArray(ftSpectrum, nRows, nCols);
 
-	        var dim = kernel.length;
+
+	        var dimR = kernel.length;
+	        var dimC = kernel[0].length;
 	        var ftFilterData = new Array(nCols * nRows);
-	        for(var i=0;i<nCols * nRows;i++){
-	            ftFilterData[i]=0;
+	        for(var i = 0; i < nCols * nRows; i++) {
+	            ftFilterData[i] = 0;
 	        }
 
 	        var iRow, iCol;
-	        var shift = (dim - 1) / 2;
-	        //console.log(dim);
-	        for (var ir = 0; ir < dim; ir++) {
-	            iRow = (ir - shift + nRows) % nRows;
-	            for (var ic = 0; ic < dim; ic++) {
-	                iCol = (ic - shift + nCols) % nCols;
+	        var shiftR = Math.floor((dimR - 1) / 2);
+	        var shiftC = Math.floor((dimC - 1) / 2);
+	        for (var ir = 0; ir < dimR; ir++) {
+	            iRow = (ir - shiftR + nRows) % nRows;
+	            for (var ic = 0; ic < dimC; ic++) {
+	                iCol = (ic - shiftC + nCols) % nCols;
 	                ftFilterData[iRow * nCols + iCol] = kernel[ir][ic];
 	            }
 	        }
-
 	        ftFilterData = this.fft2DArray(ftFilterData, nRows, nCols);
 
 	        var ftRows = nRows * 2;
 	        var ftCols = nCols / 2 + 1;
 	        this.convolute2DI(ftSpectrum, ftFilterData, ftRows, ftCols);
 
-	        return  this.ifft2DArray(ftSpectrum, ftRows, ftCols);
+	        return this.ifft2DArray(ftSpectrum, ftRows, ftCols);
+	    },
+
+
+	    toRadix2:function(data, nRows, nCols) {
+	        var i, j, irow, icol;
+	        var cols = nCols, rows = nRows, prows=0, pcols=0;
+	        if(!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
+	            //Then we have to make a pading to next radix2
+	            cols = 0;
+	            while((nCols>>++cols)!=0);
+	            cols=1<<cols;
+	            pcols = cols-nCols;
+	        }
+	        if(!(nRows !== 0 && (nRows & (nRows - 1)) === 0)) {
+	            //Then we have to make a pading to next radix2
+	            rows = 0;
+	            while((nRows>>++rows)!=0);
+	            rows=1<<rows;
+	            prows = (rows-nRows)*cols;
+	        }
+	        if(rows==nRows&&cols==nCols)//Do nothing. Returns the same input!!! Be careful
+	            return {data:data, rows:nRows, cols:nCols};
+
+	        var output = new Array(rows*cols);
+	        var shiftR = Math.floor((rows-nRows)/2)-nRows;
+	        var shiftC = Math.floor((cols-nCols)/2)-nCols;
+
+	        for( i = 0; i < rows; i++) {
+	            irow = i*cols;
+	            icol = ((i-shiftR) % nRows) * nCols;
+	            for( j = 0; j < cols; j++) {
+	                output[irow+j] = data[(icol+(j-shiftC) % nCols) ];
+	            }
+	        }
+	        return {data:output, rows:rows, cols:cols};
+	    },
+
+	    /**
+	     * Crop the given matrix to fit the corresponding number of rows and columns
+	     */
+	    crop:function(data, rows, cols, nRows, nCols, opt) {
+
+	        if(rows == nRows && cols == nCols)//Do nothing. Returns the same input!!! Be careful
+	            return data;
+
+	        var options = Object.assign({}, opt);
+
+	        var output = new Array(nCols*nRows);
+
+	        var shiftR = Math.floor((rows-nRows)/2);
+	        var shiftC = Math.floor((cols-nCols)/2);
+	        var destinyRow, sourceRow, i, j;
+	        for( i = 0; i < nRows; i++) {
+	            destinyRow = i*nCols;
+	            sourceRow = (i+shiftR)*cols;
+	            for( j = 0;j < nCols; j++) {
+	                output[destinyRow+j] = data[sourceRow+(j+shiftC)];
+	            }
+	        }
+
+	        return output;
 	    }
 	}
 
