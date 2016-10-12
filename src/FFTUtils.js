@@ -211,9 +211,9 @@ var FFTUtils= {
      * @param nCols
      * @returns {*}
      */
-    convolute:function(data, kernel, nRows, nCols, opt){
+    convolute:function(data, kernel, nRows, nCols, opt) {
         var ftSpectrum = new Array(nCols * nRows);
-        for (var i = 0; i<nRows * nCols; i++){
+        for (var i = 0; i<nRows * nCols; i++) {
             ftSpectrum[i] = data[i];
         }
 
@@ -223,8 +223,8 @@ var FFTUtils= {
         var dimR = kernel.length;
         var dimC = kernel[0].length;
         var ftFilterData = new Array(nCols * nRows);
-        for(var i=0;i<nCols * nRows;i++){
-            ftFilterData[i]=0;
+        for(var i = 0; i < nCols * nRows; i++) {
+            ftFilterData[i] = 0;
         }
 
         var iRow, iCol;
@@ -247,8 +247,8 @@ var FFTUtils= {
     },
 
 
-    toRadix2:function(data, nRows, nCols){
-        var i,j,irow, icol;
+    toRadix2:function(data, nRows, nCols) {
+        var i, j, irow, icol;
         var cols = nCols, rows = nRows, prows=0, pcols=0;
         if(!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
             //Then we have to make a pading to next radix2
@@ -271,11 +271,11 @@ var FFTUtils= {
         var shiftR = Math.floor((rows-nRows)/2)-nRows;
         var shiftC = Math.floor((cols-nCols)/2)-nCols;
 
-        for( i=0;i<rows;i++){
+        for( i = 0; i < rows; i++) {
             irow = i*cols;
             icol = ((i-shiftR) % nRows) * nCols;
-            for( j = 0;j<cols;j++){
-                output[irow+j]=data[(icol+(j-shiftC) % nCols) ];
+            for( j = 0; j < cols; j++) {
+                output[irow+j] = data[(icol+(j-shiftC) % nCols) ];
             }
         }
         return {data:output, rows:rows, cols:cols};
@@ -284,7 +284,7 @@ var FFTUtils= {
     /**
      * Crop the given matrix to fit the corresponding number of rows and columns
      */
-    crop:function(data, rows, cols, nRows, nCols, opt){
+    crop:function(data, rows, cols, nRows, nCols, opt) {
 
         if(rows == nRows && cols == nCols)//Do nothing. Returns the same input!!! Be careful
             return data;
@@ -295,13 +295,12 @@ var FFTUtils= {
 
         var shiftR = Math.floor((rows-nRows)/2);
         var shiftC = Math.floor((cols-nCols)/2);
-        var irow, icol, i, j;
-
-        for( i=0;i<nRows;i++){
-            irow = i*nRows;
-            icol = (i+shiftR)*cols;
-            for( j = 0;j<nCols;j++){
-                output[irow+j]=data[icol+(j+shiftC)];
+        var destinyRow, sourceRow, i, j;
+        for( i = 0; i < nRows; i++) {
+            destinyRow = i*nCols;
+            sourceRow = (i+shiftR)*cols;
+            for( j = 0;j < nCols; j++) {
+                output[destinyRow+j] = data[sourceRow+(j+shiftC)];
             }
         }
 
