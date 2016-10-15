@@ -9,10 +9,11 @@ describe('FFT', function () {
         var n = 4;
         var nRows = n;
         var nCols = n;
-        var data = new Array(nRows*nCols);
-        for(var i=0;i<nRows;i++){
-            for(var j=0;j<nCols;j++){
-                data[i*nCols+j]=i+j;
+        var data = new Array(nRows * nCols);
+        var i, j;
+        for (i = 0; i < nRows; i++) {
+            for (j = 0; j < nCols; j++) {
+                data[i * nCols + j] = i + j;
             }
         }
         var ftData = FFTUtils.fft2DArray(data, nCols, nCols);
@@ -20,9 +21,9 @@ describe('FFT', function () {
         var ftCols = nCols / 2 + 1;
 
         var iftData =  FFTUtils.ifft2DArray(ftData, ftRows, ftCols);
-        for(var i=0;i<nRows;i++){
-            for(var j=0;j<nCols;j++){
-                data[i*nCols+j].should.be.equal(iftData[i*nCols+j]);
+        for (i = 0; i < nRows; i++) {
+            for (j = 0; j < nCols; j++) {
+                data[i * nCols + j].should.be.equal(iftData[i * nCols + j]);
             }
         }
     });
@@ -36,43 +37,44 @@ describe('FFT', function () {
 
         var re = new Array(nCols);
         var im = new Array(nCols);
-        for(var i=0;i<nCols;i++){
-            re[i]=i;
-            im[i]=nCols-i-1;
+        var i;
+        for (i = 0; i < nCols; i++) {
+            re[i] = i;
+            im[i] = nCols - i - 1;
         }
 
         FFT.fft(re, im);
         FFT.ifft(re, im);
 
-        for(var i=0;i<nCols;i++){
-            re[i].should.be.approximately(i,10e-10);
-            im[i].should.be.approximately(nCols-i-1,10e-10);
+        for (i = 0; i < nCols; i++) {
+            re[i].should.be.approximately(i, 10e-10);
+            im[i].should.be.approximately(nCols - i - 1, 10e-10);
         }
     });
 
     it('Test utils Crop', function () {
         var nRows = 15;
         var nCols = 32;
-        var data = new Array(nRows*nCols);
-        for(var i=0;i<nRows;i++){
-            for(var j=0;j<nCols;j++){
-                data[i*nCols+j]=i+j;
+        var data = new Array(nRows * nCols);
+        for (var i = 0; i < nRows; i++) {
+            for (var j = 0; j < nCols; j++) {
+                data[i * nCols + j] = i + j;
             }
         }
 
         var radix2 = FFTUtils.toRadix2(data, nRows, nCols);
         var cropped = FFTUtils.crop(radix2.data, radix2.rows, radix2.cols, nRows, nCols);
-        cropped.length.should.equal(nCols*nRows);
-        radix2.data.length.should.equal(radix2.cols*radix2.rows);
+        cropped.length.should.equal(nCols * nRows);
+        radix2.data.length.should.equal(radix2.cols * radix2.rows);
     });
 
     it('Test utils toRadix2', function () {
         var nRows = 15;
         var nCols = 32;
-        var data = new Array(nRows*nCols);
-        for(var i=0;i<nRows;i++){
-            for(var j=0;j<nCols;j++){
-                data[i*nCols+j]=i+j;
+        var data = new Array(nRows * nCols);
+        for (var i = 0; i < nRows; i++) {
+            for (var j = 0; j < nCols; j++) {
+                data[i * nCols + j] = i + j;
             }
         }
 
