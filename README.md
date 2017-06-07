@@ -25,15 +25,14 @@ var FFTUtils = lib.FFTUtils
 ### 1D FFT and IFFT
 
 ```js
-var n = 16; 
-var nCols = n; 
+var nCols = 16; 
 FFT.init(nCols);
 var re = new Array(nCols);
 var im = new Array(nCols);
 
-for(var i=0;i<nCols;i++){
-   re[i]=i;
-   im[i]=nCols-i-1;
+for(var i=0; i<nCols; i++){
+   re[i] = i;
+   im[i] = nCols - i - 1;
 }
 
 FFT.fft(re, im);
