@@ -1,6 +1,4 @@
-'use strict';
-
-var FFT = require('./fftlib');
+import { FFT } from './fftlib';
 
 /**
  * Calculates the inverse of a 2D Fourier transform
@@ -11,51 +9,50 @@ var FFT = require('./fftlib');
  * @return
  */
 function ifft2DArray(ft, ftRows, ftCols) {
-    var tempTransform = new Array(ftRows * ftCols);
-    var nRows = ftRows / 2;
-    var nCols = (ftCols - 1) * 2;
-    // reverse transform columns
-    FFT.init(nRows);
-    var tmpCols = {re: new Array(nRows), im: new Array(nRows)};
-    var iRow, iCol;
-    for (iCol = 0; iCol < ftCols; iCol++) {
-        for (iRow = nRows - 1; iRow >= 0; iRow--) {
-            tmpCols.re[iRow] = ft[(iRow * 2) * ftCols + iCol];
-            tmpCols.im[iRow] = ft[(iRow * 2 + 1) * ftCols + iCol];
-        }
-        //Unnormalized inverse transform
-        FFT.bt(tmpCols.re, tmpCols.im);
-        for (iRow = nRows - 1; iRow >= 0; iRow--) {
-            tempTransform[(iRow * 2) * ftCols + iCol] = tmpCols.re[iRow];
-            tempTransform[(iRow * 2 + 1) * ftCols + iCol] = tmpCols.im[iRow];
-        }
+  let tempTransform = new Array(ftRows * ftCols);
+  let nRows = ftRows / 2;
+  let nCols = (ftCols - 1) * 2;
+  // reverse transform columns
+  FFT.init(nRows);
+  let tmpCols = { re: new Array(nRows), im: new Array(nRows) };
+  let iRow, iCol;
+  for (iCol = 0; iCol < ftCols; iCol++) {
+    for (iRow = nRows - 1; iRow >= 0; iRow--) {
+      tmpCols.re[iRow] = ft[iRow * 2 * ftCols + iCol];
+      tmpCols.im[iRow] = ft[(iRow * 2 + 1) * ftCols + iCol];
     }
-
-    // reverse row transform
-    var finalTransform = new Array(nRows * nCols);
-    FFT.init(nCols);
-    var tmpRows = {re: new Array(nCols), im: new Array(nCols)};
-    var scale = nCols * nRows;
-    for (iRow = 0; iRow < ftRows; iRow += 2) {
-        tmpRows.re[0] = tempTransform[iRow * ftCols];
-        tmpRows.im[0] = tempTransform[(iRow + 1) * ftCols];
-        for (iCol = 1; iCol < ftCols; iCol++) {
-            tmpRows.re[iCol] = tempTransform[iRow * ftCols + iCol];
-            tmpRows.im[iCol] = tempTransform[(iRow + 1) * ftCols + iCol];
-            tmpRows.re[nCols - iCol] = tempTransform[iRow * ftCols + iCol];
-            tmpRows.im[nCols - iCol] = -tempTransform[(iRow + 1) * ftCols + iCol];
-        }
-        //Unnormalized inverse transform
-        FFT.bt(tmpRows.re, tmpRows.im);
-
-        var indexB = (iRow / 2) * nCols;
-        for (iCol = nCols - 1; iCol >= 0; iCol--) {
-            finalTransform[indexB + iCol] = tmpRows.re[iCol] / scale;
-        }
+    //Unnormalized inverse transform
+    FFT.bt(tmpCols.re, tmpCols.im);
+    for (iRow = nRows - 1; iRow >= 0; iRow--) {
+      tempTransform[iRow * 2 * ftCols + iCol] = tmpCols.re[iRow];
+      tempTransform[(iRow * 2 + 1) * ftCols + iCol] = tmpCols.im[iRow];
     }
-    return finalTransform;
+  }
+
+  // reverse row transform
+  let finalTransform = new Array(nRows * nCols);
+  FFT.init(nCols);
+  let tmpRows = { re: new Array(nCols), im: new Array(nCols) };
+  let scale = nCols * nRows;
+  for (iRow = 0; iRow < ftRows; iRow += 2) {
+    tmpRows.re[0] = tempTransform[iRow * ftCols];
+    tmpRows.im[0] = tempTransform[(iRow + 1) * ftCols];
+    for (iCol = 1; iCol < ftCols; iCol++) {
+      tmpRows.re[iCol] = tempTransform[iRow * ftCols + iCol];
+      tmpRows.im[iCol] = tempTransform[(iRow + 1) * ftCols + iCol];
+      tmpRows.re[nCols - iCol] = tempTransform[iRow * ftCols + iCol];
+      tmpRows.im[nCols - iCol] = -tempTransform[(iRow + 1) * ftCols + iCol];
+    }
+    //Unnormalized inverse transform
+    FFT.bt(tmpRows.re, tmpRows.im);
+
+    let indexB = (iRow / 2) * nCols;
+    for (iCol = nCols - 1; iCol >= 0; iCol--) {
+      finalTransform[indexB + iCol] = tmpRows.re[iCol] / scale;
+    }
+  }
+  return finalTransform;
 }
-exports.ifft2DArray = ifft2DArray;
 
 /**
  * Calculates the fourier transform of a matrix of size (nRows,nCols) It is
@@ -70,68 +67,67 @@ exports.ifft2DArray = ifft2DArray;
  * @return
  */
 function fft2DArray(data, nRows, nCols) {
-    var iRow, iCol;
-    var ftCols = (nCols / 2 + 1);
-    var ftRows = nRows * 2;
-    var tempTransform = new Array(ftRows * ftCols);
-    FFT.init(nCols);
-    // transform rows
-    var tmpRows = {re: new Array(nCols), im: new Array(nCols)};
-    var row1 = {re: new Array(nCols), im: new Array(nCols)};
-    var row2 = {re: new Array(nCols), im: new Array(nCols)};
-    var index, iRow0, iRow1, iRow2, iRow3;
-    for (iRow = 0; iRow < nRows / 2; iRow++) {
-        index = (iRow * 2) * nCols;
-        tmpRows.re = data.slice(index, index + nCols);
+  let iRow, iCol;
+  let ftCols = nCols / 2 + 1;
+  let ftRows = nRows * 2;
+  let tempTransform = new Array(ftRows * ftCols);
+  FFT.init(nCols);
+  // transform rows
+  let tmpRows = { re: new Array(nCols), im: new Array(nCols) };
+  let row1 = { re: new Array(nCols), im: new Array(nCols) };
+  let row2 = { re: new Array(nCols), im: new Array(nCols) };
+  let index, iRow0, iRow1, iRow2, iRow3;
+  for (iRow = 0; iRow < nRows / 2; iRow++) {
+    index = iRow * 2 * nCols;
+    tmpRows.re = data.slice(index, index + nCols);
 
-        index = (iRow * 2 + 1) * nCols;
-        tmpRows.im = data.slice(index, index + nCols);
+    index = (iRow * 2 + 1) * nCols;
+    tmpRows.im = data.slice(index, index + nCols);
 
-        FFT.fft1d(tmpRows.re, tmpRows.im);
+    FFT.fft1d(tmpRows.re, tmpRows.im);
 
-        reconstructTwoRealFFT(tmpRows, row1, row2);
-        //Now lets put back the result into the output array
-        iRow0 = (iRow * 4) * ftCols;
-        iRow1 = (iRow * 4 + 1) * ftCols;
-        iRow2 = (iRow * 4 + 2) * ftCols;
-        iRow3 = (iRow * 4 + 3) * ftCols;
-        for (var k = ftCols - 1; k >= 0; k--) {
-            tempTransform[iRow0 + k] = row1.re[k];
-            tempTransform[iRow1 + k] = row1.im[k];
-            tempTransform[iRow2 + k] = row2.re[k];
-            tempTransform[iRow3 + k] = row2.im[k];
-        }
+    reconstructTwoRealFFT(tmpRows, row1, row2);
+    //Now lets put back the result into the output array
+    iRow0 = iRow * 4 * ftCols;
+    iRow1 = (iRow * 4 + 1) * ftCols;
+    iRow2 = (iRow * 4 + 2) * ftCols;
+    iRow3 = (iRow * 4 + 3) * ftCols;
+    for (let k = ftCols - 1; k >= 0; k--) {
+      tempTransform[iRow0 + k] = row1.re[k];
+      tempTransform[iRow1 + k] = row1.im[k];
+      tempTransform[iRow2 + k] = row2.re[k];
+      tempTransform[iRow3 + k] = row2.im[k];
     }
+  }
 
-    //console.log(tempTransform);
-    row1 = null;
-    row2 = null;
-    // transform columns
-    var finalTransform = new Array(ftRows * ftCols);
+  //console.log(tempTransform);
+  row1 = null;
+  row2 = null;
+  // transform columns
+  let finalTransform = new Array(ftRows * ftCols);
 
-    FFT.init(nRows);
-    var tmpCols = {re: new Array(nRows), im: new Array(nRows)};
-    for (iCol = ftCols - 1; iCol >= 0; iCol--) {
-        for (iRow = nRows - 1; iRow >= 0; iRow--) {
-            tmpCols.re[iRow] = tempTransform[(iRow * 2) * ftCols + iCol];
-            tmpCols.im[iRow] = tempTransform[(iRow * 2 + 1) * ftCols + iCol];
-            //TODO Check why this happens
-            if (isNaN(tmpCols.re[iRow])) {
-                tmpCols.re[iRow] = 0;
-            }
-            if (isNaN(tmpCols.im[iRow])) {
-                tmpCols.im[iRow] = 0;
-            }
-        }
-        FFT.fft1d(tmpCols.re, tmpCols.im);
-        for (iRow = nRows - 1; iRow >= 0; iRow--) {
-            finalTransform[(iRow * 2) * ftCols + iCol] = tmpCols.re[iRow];
-            finalTransform[(iRow * 2 + 1) * ftCols + iCol] = tmpCols.im[iRow];
-        }
+  FFT.init(nRows);
+  let tmpCols = { re: new Array(nRows), im: new Array(nRows) };
+  for (iCol = ftCols - 1; iCol >= 0; iCol--) {
+    for (iRow = nRows - 1; iRow >= 0; iRow--) {
+      tmpCols.re[iRow] = tempTransform[iRow * 2 * ftCols + iCol];
+      tmpCols.im[iRow] = tempTransform[(iRow * 2 + 1) * ftCols + iCol];
+      //TODO Check why this happens
+      if (isNaN(tmpCols.re[iRow])) {
+        tmpCols.re[iRow] = 0;
+      }
+      if (isNaN(tmpCols.im[iRow])) {
+        tmpCols.im[iRow] = 0;
+      }
     }
-    return finalTransform;
+    FFT.fft1d(tmpCols.re, tmpCols.im);
+    for (iRow = nRows - 1; iRow >= 0; iRow--) {
+      finalTransform[iRow * 2 * ftCols + iCol] = tmpCols.re[iRow];
+      finalTransform[(iRow * 2 + 1) * ftCols + iCol] = tmpCols.im[iRow];
+    }
+  }
+  return finalTransform;
 }
-exports.fft2DArray = fft2DArray;
 
 /**
  *
@@ -148,32 +144,35 @@ exports.fft2DArray = fft2DArray;
  * G_{N-n} = G_n^{*} for a purely imaginary g transformed to G
  *
  */
-function reconstructTwoRealFFT(fourierTransform, realTransform1, realTransform2) {
-    var length = fourierTransform.re.length;
+function reconstructTwoRealFFT(
+  fourierTransform,
+  realTransform1,
+  realTransform2,
+) {
+  let length = fourierTransform.re.length;
 
-    // the components n=0 are trivial
-    realTransform1.re[0] = fourierTransform.re[0];
-    realTransform1.im[0] = 0.0;
-    realTransform2.re[0] = fourierTransform.im[0];
-    realTransform2.im[0] = 0.0;
-    var rm, rp, im, ip, j;
-    for (var i = length / 2; i > 0; i--) {
-        j = length - i;
-        rm = 0.5 * (fourierTransform.re[i] - fourierTransform.re[j]);
-        rp = 0.5 * (fourierTransform.re[i] + fourierTransform.re[j]);
-        im = 0.5 * (fourierTransform.im[i] - fourierTransform.im[j]);
-        ip = 0.5 * (fourierTransform.im[i] + fourierTransform.im[j]);
-        realTransform1.re[i] = rp;
-        realTransform1.im[i] = im;
-        realTransform1.re[j] = rp;
-        realTransform1.im[j] = -im;
-        realTransform2.re[i] = ip;
-        realTransform2.im[i] = -rm;
-        realTransform2.re[j] = ip;
-        realTransform2.im[j] = rm;
-    }
+  // the components n=0 are trivial
+  realTransform1.re[0] = fourierTransform.re[0];
+  realTransform1.im[0] = 0.0;
+  realTransform2.re[0] = fourierTransform.im[0];
+  realTransform2.im[0] = 0.0;
+  let rm, rp, im, ip, j;
+  for (let i = length / 2; i > 0; i--) {
+    j = length - i;
+    rm = 0.5 * (fourierTransform.re[i] - fourierTransform.re[j]);
+    rp = 0.5 * (fourierTransform.re[i] + fourierTransform.re[j]);
+    im = 0.5 * (fourierTransform.im[i] - fourierTransform.im[j]);
+    ip = 0.5 * (fourierTransform.im[i] + fourierTransform.im[j]);
+    realTransform1.re[i] = rp;
+    realTransform1.im[i] = im;
+    realTransform1.re[j] = rp;
+    realTransform1.im[j] = -im;
+    realTransform2.re[i] = ip;
+    realTransform2.im[i] = -rm;
+    realTransform2.re[j] = ip;
+    realTransform2.im[j] = rm;
+  }
 }
-exports.reconstructTwoRealFFT = reconstructTwoRealFFT;
 
 /**
  * In place version of convolute 2D
@@ -185,25 +184,26 @@ exports.reconstructTwoRealFFT = reconstructTwoRealFFT;
  * @return
  */
 function convolute2DI(ftSignal, ftFilter, ftRows, ftCols) {
-    var re, im;
-    for (var iRow = 0; iRow < ftRows / 2; iRow++) {
-        for (var iCol = 0; iCol < ftCols; iCol++) {
-            //
-            re = ftSignal[(iRow * 2) * ftCols + iCol]
-                * ftFilter[(iRow * 2) * ftCols + iCol]
-                - ftSignal[(iRow * 2 + 1) * ftCols + iCol]
-                * ftFilter[(iRow * 2 + 1) * ftCols + iCol];
-            im = ftSignal[(iRow * 2) * ftCols + iCol]
-                * ftFilter[(iRow * 2 + 1) * ftCols + iCol]
-                + ftSignal[(iRow * 2 + 1) * ftCols + iCol]
-                * ftFilter[(iRow * 2) * ftCols + iCol];
-            //
-            ftSignal[(iRow * 2) * ftCols + iCol] = re;
-            ftSignal[(iRow * 2 + 1) * ftCols + iCol] = im;
-        }
+  let re, im;
+  for (let iRow = 0; iRow < ftRows / 2; iRow++) {
+    for (let iCol = 0; iCol < ftCols; iCol++) {
+      //
+      re =
+        ftSignal[iRow * 2 * ftCols + iCol] *
+          ftFilter[iRow * 2 * ftCols + iCol] -
+        ftSignal[(iRow * 2 + 1) * ftCols + iCol] *
+          ftFilter[(iRow * 2 + 1) * ftCols + iCol];
+      im =
+        ftSignal[iRow * 2 * ftCols + iCol] *
+          ftFilter[(iRow * 2 + 1) * ftCols + iCol] +
+        ftSignal[(iRow * 2 + 1) * ftCols + iCol] *
+          ftFilter[iRow * 2 * ftCols + iCol];
+      //
+      ftSignal[iRow * 2 * ftCols + iCol] = re;
+      ftSignal[(iRow * 2 + 1) * ftCols + iCol] = im;
     }
+  }
 }
-exports.convolute2DI = convolute2DI;
 
 /**
  *
@@ -214,104 +214,110 @@ exports.convolute2DI = convolute2DI;
  * @returns {*}
  */
 function convolute(data, kernel, nRows, nCols) {
-    var i;
-    var ftSpectrum = new Array(nCols * nRows);
-    for (i = 0; i < nRows * nCols; i++) {
-        ftSpectrum[i] = data[i];
+  let i;
+  let ftSpectrum = new Array(nCols * nRows);
+  for (i = 0; i < nRows * nCols; i++) {
+    ftSpectrum[i] = data[i];
+  }
+
+  ftSpectrum = fft2DArray(ftSpectrum, nRows, nCols);
+
+  let dimR = kernel.length;
+  let dimC = kernel[0].length;
+  let ftFilterData = new Array(nCols * nRows);
+  for (i = 0; i < nCols * nRows; i++) {
+    ftFilterData[i] = 0;
+  }
+
+  let iRow, iCol;
+  let shiftR = Math.floor((dimR - 1) / 2);
+  let shiftC = Math.floor((dimC - 1) / 2);
+  for (let ir = 0; ir < dimR; ir++) {
+    iRow = (ir - shiftR + nRows) % nRows;
+    for (let ic = 0; ic < dimC; ic++) {
+      iCol = (ic - shiftC + nCols) % nCols;
+      ftFilterData[iRow * nCols + iCol] = kernel[ir][ic];
     }
+  }
+  ftFilterData = fft2DArray(ftFilterData, nRows, nCols);
 
-    ftSpectrum = fft2DArray(ftSpectrum, nRows, nCols);
+  let ftRows = nRows * 2;
+  let ftCols = nCols / 2 + 1;
+  convolute2DI(ftSpectrum, ftFilterData, ftRows, ftCols);
 
-    var dimR = kernel.length;
-    var dimC = kernel[0].length;
-    var ftFilterData = new Array(nCols * nRows);
-    for (i = 0; i < nCols * nRows; i++) {
-        ftFilterData[i] = 0;
-    }
-
-    var iRow, iCol;
-    var shiftR = Math.floor((dimR - 1) / 2);
-    var shiftC = Math.floor((dimC - 1) / 2);
-    for (var ir = 0; ir < dimR; ir++) {
-        iRow = (ir - shiftR + nRows) % nRows;
-        for (var ic = 0; ic < dimC; ic++) {
-            iCol = (ic - shiftC + nCols) % nCols;
-            ftFilterData[iRow * nCols + iCol] = kernel[ir][ic];
-        }
-    }
-    ftFilterData = fft2DArray(ftFilterData, nRows, nCols);
-
-    var ftRows = nRows * 2;
-    var ftCols = nCols / 2 + 1;
-    convolute2DI(ftSpectrum, ftFilterData, ftRows, ftCols);
-
-    return ifft2DArray(ftSpectrum, ftRows, ftCols);
+  return ifft2DArray(ftSpectrum, ftRows, ftCols);
 }
-exports.convolute = convolute;
 
 function toRadix2(data, nRows, nCols) {
-    var i, j, irow, icol;
-    var cols = nCols;
-    var rows = nRows;
-    //var prows = 0;
-    //var pcols = 0;
-    if (!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
-        //Then we have to make a pading to next radix2
-        cols = 0;
-        while ((nCols >> ++cols) !== 0);
-        cols = 1 << cols;
-        //pcols = cols - nCols;
-    }
-    if (!(nRows !== 0 && (nRows & (nRows - 1)) === 0)) {
-        //Then we have to make a pading to next radix2
-        rows = 0;
-        while ((nRows >> ++rows) !== 0);
-        rows = 1 << rows;
-        //prows = (rows - nRows) * cols;
-    }
-    if (rows === nRows && cols === nCols) {
-        //Do nothing. Returns the same input!!! Be careful
-        return {data: data, rows: nRows, cols: nCols};
-    }
+  let i, j, irow, icol;
+  let cols = nCols;
+  let rows = nRows;
+  //var prows = 0;
+  //var pcols = 0;
+  if (!(nCols !== 0 && (nCols & (nCols - 1)) === 0)) {
+    //Then we have to make a pading to next radix2
+    cols = 0;
+    while (nCols >> ++cols !== 0);
+    cols = 1 << cols;
+    //pcols = cols - nCols;
+  }
+  if (!(nRows !== 0 && (nRows & (nRows - 1)) === 0)) {
+    //Then we have to make a pading to next radix2
+    rows = 0;
+    while (nRows >> ++rows !== 0);
+    rows = 1 << rows;
+    //prows = (rows - nRows) * cols;
+  }
+  if (rows === nRows && cols === nCols) {
+    //Do nothing. Returns the same input!!! Be careful
+    return { data: data, rows: nRows, cols: nCols };
+  }
 
-    var output = new Array(rows * cols);
-    var shiftR = Math.floor((rows - nRows) / 2) - nRows;
-    var shiftC = Math.floor((cols - nCols) / 2) - nCols;
+  let output = new Array(rows * cols);
+  let shiftR = Math.floor((rows - nRows) / 2) - nRows;
+  let shiftC = Math.floor((cols - nCols) / 2) - nCols;
 
-    for (i = 0; i < rows; i++) {
-        irow = i * cols;
-        icol = ((i - shiftR) % nRows) * nCols;
-        for (j = 0; j < cols; j++) {
-            output[irow + j] = data[(icol + (j - shiftC) % nCols) ];
-        }
+  for (i = 0; i < rows; i++) {
+    irow = i * cols;
+    icol = ((i - shiftR) % nRows) * nCols;
+    for (j = 0; j < cols; j++) {
+      output[irow + j] = data[icol + ((j - shiftC) % nCols)];
     }
-    return {data: output, rows: rows, cols: cols};
+  }
+  return { data: output, rows: rows, cols: cols };
 }
-exports.toRadix2 = toRadix2;
 
 /**
  * Crop the given matrix to fit the corresponding number of rows and columns
  */
 function crop(data, rows, cols, nRows, nCols) {
+  if (rows === nRows && cols === nCols) {
+    //Do nothing. Returns the same input!!! Be careful
+    return data;
+  }
 
-    if (rows === nRows && cols === nCols) {
-        //Do nothing. Returns the same input!!! Be careful
-        return data;
+  let output = new Array(nCols * nRows);
+
+  let shiftR = Math.floor((rows - nRows) / 2);
+  let shiftC = Math.floor((cols - nCols) / 2);
+  let destinyRow, sourceRow, i, j;
+  for (i = 0; i < nRows; i++) {
+    destinyRow = i * nCols;
+    sourceRow = (i + shiftR) * cols;
+    for (j = 0; j < nCols; j++) {
+      output[destinyRow + j] = data[sourceRow + (j + shiftC)];
     }
+  }
 
-    var output = new Array(nCols * nRows);
-
-    var shiftR = Math.floor((rows - nRows) / 2);
-    var shiftC = Math.floor((cols - nCols) / 2);
-    var destinyRow, sourceRow, i, j;
-    for (i = 0; i < nRows; i++) {
-        destinyRow = i * nCols;
-        sourceRow = (i + shiftR) * cols;
-        for (j = 0; j < nCols; j++) {
-            output[destinyRow + j] = data[sourceRow + (j + shiftC)];
-        }
-    }
-
-    return output;
+  return output;
 }
-exports.crop = crop;
+
+export const FFTUtils = {
+  crop,
+  convolute,
+  toRadix2,
+  convolute2DI,
+  reconstructTwoRealFFT,
+  fft2DArray,
+  ifft2DArray,
+};

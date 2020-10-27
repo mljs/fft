@@ -1,4 +1,2 @@
-'use strict';
-
-exports.FFTUtils = require('./FFTUtils');
-exports.FFT = require('./fftlib');
+export { FFT } from './fftlib';
+export { FFTUtils } from './FFTUtils';
